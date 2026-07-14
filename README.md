@@ -1,2 +1,10 @@
 # UROP_Research_Project
 This repository contains code and accompanying content that has been created for a summer research experience at RWTH University in Aachen, Germany
+
+## Research Focus
+The focus of this research lies in the implementation of simulation frameworks for automated driving evaluation and development. Specifically, in the co-simulation environment of SUMO and CARLA (with its instances ran via OpenSCENARIO support). A driving environment can be defined independently in SUMO, OpenSCENARIO, and CARLA, however they each are tailored to a specific focus within simulating driving. For SUMO, this lies in the modeling of traffic behaviors and overall flow characteristics between the entities. For OpenSCENARIO, it's advantage is the coupling of events that can be easily coordinated through their file structure through maneuvers, events, acts, triggers, etc. CARLA focuses on the high-fidelity of its environment, as well as modeling vehicle dynamics and data collection via sensors as accurately as possible. By combining these approaches into one, multi-faceted co-simulation, a driving scene filled with rich data may be obtained.
+
+While there is pre-existing support for the OpenSCENARIO-CARLA environments, a gap is present within transferring between the instances of SUMO and OpenSCENARIO. This has been the focus of the work done for this project. As can be seen through the figures and code, there are many scenarios that have been reproduced within SUMO from their initial definitions within OpenSCENARIO. While this is not perfect so far, it is a start in the right direction and lays the foundation for continued support. With the limited duration of this summer experience, the focus has been on rapid developing accompanied by a lot of trial and error.
+
+## Official Documentation
+Please see the items within the *symposium_content* folder for official documentation of the research. All proper attributions for sources used throughout this project are listed in the 'Reference' section of the report.
