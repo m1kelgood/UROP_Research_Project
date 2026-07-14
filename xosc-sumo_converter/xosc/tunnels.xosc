@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='utf-8'?>
+<OpenSCENARIO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OpenScenario.xsd">
+   <FileHeader description="" author="esmini team" revMajor="1" revMinor="3" date="2024-12-17T13:45:36.700694"/>
+   <ParameterDeclarations/>
+   <CatalogLocations>
+      <VehicleCatalog>
+         <Directory path="../xosc/Catalogs/Vehicles"/>
+      </VehicleCatalog>
+   </CatalogLocations>
+   <RoadNetwork>
+      <LogicFile filepath="../xodr/tunnels.xodr"/>
+   </RoadNetwork>
+   <Entities>
+      <ScenarioObject name="Car1">
+         <Vehicle name="car_white" vehicleCategory="car">
+               <BoundingBox>
+                  <Center x="2.0" y="0.0" z="0.9"/>
+                  <Dimensions width="1.61" length="4.508" height="1.8"/>
+               </BoundingBox>
+               <Performance maxSpeed="50.8" maxDeceleration="11.5" maxAcceleration="11.5"/>
+               <Axles>
+                  <FrontAxle maxSteering="0.523598775598" wheelDiameter="0.8" trackWidth="1.68" positionX="2.98" positionZ="0.4"/>
+                  <RearAxle maxSteering="0.523598775598" wheelDiameter="0.8" trackWidth="1.68" positionX="0.0" positionZ="0.4"/>
+               </Axles>
+               <Properties>
+                  <Property name="model_id" value="ego"/>
+                  <Property name="type" value="ego_vehicle"/>
+                  <File filepath="/work/mgood/esmini-demo_Linux/esmini-demo/resources/models/car_yellow.osgb"/>
+               </Properties>
+         </Vehicle>
+      </ScenarioObject>
+      <ScenarioObject name="Car2">
+         <CatalogReference catalogName="VehicleCatalog" entryName="car_red"/>
+      </ScenarioObject>
+      <ScenarioObject name="Car3">
+         <CatalogReference catalogName="VehicleCatalog" entryName="car_yellow"/>
+      </ScenarioObject>
+      <ScenarioObject name="Car4">
+         <CatalogReference catalogName="VehicleCatalog" entryName="car_blue"/>
+      </ScenarioObject>
+      <ScenarioObject name="Car5">
+         <CatalogReference catalogName="VehicleCatalog" entryName="van_red"/>
+      </ScenarioObject>
+   </Entities>
+   <Storyboard>
+      <Init>
+         <Actions>
+            <Private entityRef="Car1">
+               <PrivateAction>
+                  <TeleportAction>
+                     <Position>
+                        <LanePosition roadId="1" laneId="-1" s="10" offset="0.0"/>
+                     </Position>
+                  </TeleportAction>
+               </PrivateAction>
+               <PrivateAction>
+                  <LongitudinalAction>
+                     <SpeedAction>
+                        <SpeedActionDynamics dynamicsShape="step" value="0.0" dynamicsDimension="time"/>
+                        <SpeedActionTarget>
+                           <AbsoluteTargetSpeed value="${50/3.6}"/>
+                        </SpeedActionTarget>
+                     </SpeedAction>
+                  </LongitudinalAction>
+               </PrivateAction>
+            </Private>
+            <Private entityRef="Car2">
+               <PrivateAction>
+                  <TeleportAction>
+                     <Position>
+                        <LanePosition roadId="1" laneId="1" s="570" offset="0.0"/>
+                     </Position>
+                  </TeleportAction>
+               </PrivateAction>
+               <PrivateAction>
+                  <LongitudinalAction>
+                     <SpeedAction>
+                        <SpeedActionDynamics dynamicsShape="step" value="0.0" dynamicsDimension="time"/>
+                        <SpeedActionTarget>
+                           <AbsoluteTargetSpeed value="${50/3.6}"/>
+                        </SpeedActionTarget>
+                     </SpeedAction>
+                  </LongitudinalAction>
+               </PrivateAction>
+            </Private>
+            <Private entityRef="Car3">
+               <PrivateAction>
+                  <TeleportAction>
+                     <Position>
+                        <LanePosition roadId="1" laneId="1" s="280" offset="0.0"/>
+                     </Position>
+                  </TeleportAction>
+               </PrivateAction>
+               <PrivateAction>
+                  <LongitudinalAction>
+                     <SpeedAction>
+                        <SpeedActionDynamics dynamicsShape="step" value="0.0" dynamicsDimension="time"/>
+                        <SpeedActionTarget>
+                           <AbsoluteTargetSpeed value="${50/3.6}"/>
+                        </SpeedActionTarget>
+                     </SpeedAction>
+                  </LongitudinalAction>
+               </PrivateAction>
+            </Private>
+            <Private entityRef="Car4">
+               <PrivateAction>
+                  <TeleportAction>
+                     <Position>
+                        <LanePosition roadId="2" laneId="-1" s="10" offset="0.0"/>
+                     </Position>
+                  </TeleportAction>
+               </PrivateAction>
+               <PrivateAction>
+                  <LongitudinalAction>
+                     <SpeedAction>
+                        <SpeedActionDynamics dynamicsShape="step" value="0.0" dynamicsDimension="time"/>
+                        <SpeedActionTarget>
+                           <AbsoluteTargetSpeed value="${30/3.6}"/>
+                        </SpeedActionTarget>
+                     </SpeedAction>
+                  </LongitudinalAction>
+               </PrivateAction>
+            </Private>
+            <Private entityRef="Car5">
+               <PrivateAction>
+                  <TeleportAction>
+                     <Position>
+                        <LanePosition roadId="2" laneId="1" s="280" offset="0.0"/>
+                     </Position>
+                  </TeleportAction>
+               </PrivateAction>
+               <PrivateAction>
+                  <LongitudinalAction>
+                     <SpeedAction>
+                        <SpeedActionDynamics dynamicsShape="step" value="0.0" dynamicsDimension="time"/>
+                        <SpeedActionTarget>
+                           <AbsoluteTargetSpeed value="${30/3.6}"/>
+                        </SpeedActionTarget>
+                     </SpeedAction>
+                  </LongitudinalAction>
+               </PrivateAction>
+            </Private>
+         </Actions>
+      </Init>
+      <StopTrigger>
+         <ConditionGroup>
+            <Condition name="EndCondition" delay="0" conditionEdge="none">
+               <ByEntityCondition>
+                  <TriggeringEntities triggeringEntitiesRule="any">
+                     <EntityRef entityRef="Car1"/>
+                  </TriggeringEntities>
+                  <EntityCondition>
+                     <EndOfRoadCondition duration="3.0"/>
+                  </EntityCondition>
+               </ByEntityCondition>
+            </Condition>
+         </ConditionGroup>
+      </StopTrigger>
+   </Storyboard>
+</OpenSCENARIO>

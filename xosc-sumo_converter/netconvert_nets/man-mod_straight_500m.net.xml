@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+NOTE: due to netconvert not properly constructing the lanes, (and the SUMO lane change rules),
+      this file was manually modified (man-mod) to allow for proper scenario dynamics in SUMO 
+-->
+
+<!-- generated on 2026-06-25T14:02:29.747390+01:00 by Eclipse SUMO netedit 1.27.0
+<neteditConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/neteditConfiguration.xsd">
+
+    <input>
+        <sumo-net-file value="man-mod_straight_500m.net.xml"/>
+    </input>
+
+    <output>
+        <output-file value="man-mod_straight_500m.net.xml"/>
+    </output>
+
+    <processing>
+        <geometry.min-radius.fix.railways value="false"/>
+        <geometry.avoid-overlap value="false"/>
+        <geometry.max-grade.fix value="false"/>
+        <offset.disable-normalization value="true"/>
+    </processing>
+
+    <junctions>
+        <no-turnarounds value="true"/>
+        <rectangular-lane-cut value="1"/>
+    </junctions>
+
+</neteditConfiguration>
+-->
+
+<net version="1.20" junctionCornerDetail="5" rectangularLaneCut="true" limitTurnSpeed="5.50" avoidOverlap="0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/net_file.xsd">
+
+    <location netOffset="0.00,0.00" convBoundary="0.00,0.00,500.00,0.00" origBoundary="0.000000,0.000000,0.000000,0.000000" projParameter="+proj=utm +lat_0=37.35429341239328 +lon_0=-122.0859797650754 +k_0=1 +x_0=0 +y_0=0 +datum=WGS84 +geoidgrids=egm96_15.gtx +vunits=m +zone=32 +ellps=GRS80 +units=m +no_defs        "/>
+
+    <type id="driving" priority="1" speed="13.89" disallow="pedestrian tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone" width="3.65"/>
+
+    <edge id="-1" from="1.begin" to="1.end" priority="-1">
+        <lane id="-1_0" index="0" speed="13.89" length="500.00" shape="0.00,-4.80 500.00,-4.80">
+            <param key="origId" value="1_-1"/>
+        </lane>
+
+        <lane id="-1_1" index="1" speed="13.89" length="500.00" shape="0.00,-1.60 500.00,-1.60">
+            <param key="origId" value="1_0"/>
+        </lane>
+    </edge>
+
+    <junction id="1.begin" type="dead_end" x="0.00" y="0.00" incLanes="" intLanes="" shape="0.00,0.00 0.00,-6.40"/>
+    <junction id="1.end" type="dead_end" x="500.00" y="0.00" incLanes="-1_0 -1_1" intLanes="" shape="500.00,-6.40 500.00,0.00"/>
+
+</net>

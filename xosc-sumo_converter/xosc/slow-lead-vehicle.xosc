@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demonstrate use of TimeToCollision trigger -->
+<OpenSCENARIO>
+   <FileHeader revMajor="1"
+               revMinor="0"
+               date="2019-10-09T10:00:00"
+               description="Slow vehicle ahead"
+               author="esmini-team"/>
+   <ParameterDeclarations>
+      <ParameterDeclaration name="EgoVehicle" parameterType="string" value="car_white"/>
+      <ParameterDeclaration name="LeadVehicle" parameterType="string" value="car_red"/>
+   </ParameterDeclarations>
+   <CatalogLocations>
+      <VehicleCatalog>
+         <Directory path="../xosc/Catalogs/Vehicles"/>
+      </VehicleCatalog>
+   </CatalogLocations>
+   <RoadNetwork>
+      <LogicFile filepath="../xodr/straight_500m_signs.xodr"/>
+   </RoadNetwork>
+   <Entities>
+      <ScenarioObject name="Ego">
+         <Vehicle name="car_white" vehicleCategory="car">
+               <BoundingBox>
+                  <Center x="2.0" y="0.0" z="0.9"/>
+                  <Dimensions width="1.61" length="4.508" height="1.8"/>
+               </BoundingBox>
+               <Performance maxSpeed="50.8" maxDeceleration="11.5" maxAcceleration="11.5"/>
+               <Axles>
+                  <FrontAxle maxSteering="0.523598775598" wheelDiameter="0.8" trackWidth="1.68" positionX="2.98" positionZ="0.4"/>
+                  <RearAxle maxSteering="0.523598775598" wheelDiameter="0.8" trackWidth="1.68" positionX="0.0" positionZ="0.4"/>
+               </Axles>
+               <Properties>
+                  <Property name="model_id" value="ego"/>
+                  <Property name="type" value="ego_vehicle"/>
+                  <File filepath="/work/mgood/esmini-demo_Linux/esmini-demo/resources/models/car_white.osgb"/>
+               </Properties>
+         </Vehicle>
+      </ScenarioObject>
+      <ScenarioObject name="Lead">
+         <Vehicle name="car_white" vehicleCategory="car">
+               <BoundingBox>
+                  <Center x="2.0" y="0.0" z="0.9"/>
+                  <Dimensions width="1.61" length="4.508" height="1.8"/>
+               </BoundingBox>
+               <Performance maxSpeed="50.8" maxDeceleration="11.5" maxAcceleration="11.5"/>
+               <Axles>
+                  <FrontAxle maxSteering="0.523598775598" wheelDiameter="0.8" trackWidth="1.68" positionX="2.98" positionZ="0.4"/>
+                  <RearAxle maxSteering="0.523598775598" wheelDiameter="0.8" trackWidth="1.68" positionX="0.0" positionZ="0.4"/>
+               </Axles>
+               <Properties>
+                  <Property name="model_id" value="ego"/>
+                  <Property name="type" value="ego_vehicle"/>
+                  <File filepath="/work/mgood/esmini-demo_Linux/esmini-demo/resources/models/car_yellow.osgb"/>
+               </Properties>
+         </Vehicle>
+      </ScenarioObject>
+   </Entities>
+   <Storyboard>
+      <Init>
+         <Actions>
+            <Private entityRef="Ego">
+               <PrivateAction>
+                  <LongitudinalAction>
+                     <SpeedAction>
+                        <SpeedActionDynamics dynamicsShape="step" dynamicsDimension="time" value="0" />
+                        <SpeedActionTarget>
+                           <AbsoluteTargetSpeed value="30"/>
+                        </SpeedActionTarget>
+                     </SpeedAction>
+                  </LongitudinalAction>
+               </PrivateAction>
+               <PrivateAction>
+                  <TeleportAction>
+                     <Position>
+                        <LanePosition roadId="1" laneId="-1" offset="0" s="50"/>
+                     </Position>
+                  </TeleportAction>
+               </PrivateAction>
+            </Private>
+            <Private entityRef="Lead">
+               <PrivateAction>
+                  <LongitudinalAction>
+                     <SpeedAction>
+                        <SpeedActionDynamics dynamicsShape="step" dynamicsDimension="time" value="0"/>
+                        <SpeedActionTarget>
+                           <AbsoluteTargetSpeed value="1"/>
+                        </SpeedActionTarget>
+                     </SpeedAction>
+                  </LongitudinalAction>
+               </PrivateAction>
+               <PrivateAction>
+                  <TeleportAction>
+                     <Position>
+                        <LanePosition roadId="1" laneId="-1" offset="0" s="200"/>
+                     </Position>
+                  </TeleportAction>
+               </PrivateAction>
+            </Private>
+         </Actions>
+      </Init>
+      <Story name="brake-for-slow-lead-vehicle_Story">
+         <ParameterDeclarations>
+            <ParameterDeclaration parameterType="string" name="owner" value="Ego"/>
+         </ParameterDeclarations>
+         <Act name="brake-for-slow-lead-vehicle_Act">
+            <ManeuverGroup maximumExecutionCount="1" name="brake-for-slow-lead-vehicle_ManeuverGroup">
+               <Actors selectTriggeringEntities="false">
+                  <EntityRef entityRef="$owner"/>
+               </Actors>
+               <Maneuver name="brake_Maneuver">
+                  <Event name="brake_Event" priority="overwrite">
+                     <Action name="brake_Action">
+                        <PrivateAction>
+                           <LongitudinalAction>
+                              <SpeedAction>
+                                 <SpeedActionDynamics dynamicsShape="linear" value="-6" dynamicsDimension="rate"/>
+                                 <SpeedActionTarget>
+                                    <AbsoluteTargetSpeed value="0"/>
+                                 </SpeedActionTarget>
+                              </SpeedAction>
+                           </LongitudinalAction>
+                        </PrivateAction>
+                     </Action>
+                     <StartTrigger>
+                        <ConditionGroup>
+                           <Condition name="brake_Condition" delay="0" conditionEdge="rising">
+                              <ByEntityCondition>
+                                 <TriggeringEntities triggeringEntitiesRule="any">
+                                    <EntityRef entityRef="$owner"/>
+                                 </TriggeringEntities>
+                                 <EntityCondition>
+                                    <TimeToCollisionCondition value="2.7"
+                                                         freespace="false"
+                                                         alongRoute="true"
+                                                         rule="lessThan" >
+                                        <TimeToCollisionConditionTarget >
+                                            <EntityRef entityRef="Lead" />
+                                        </TimeToCollisionConditionTarget>
+                                    </TimeToCollisionCondition>
+                                 </EntityCondition>
+                              </ByEntityCondition>
+                           </Condition>
+                        </ConditionGroup>
+                     </StartTrigger>
+                  </Event>
+               </Maneuver>
+            </ManeuverGroup>
+            <StartTrigger>
+               <ConditionGroup>
+                  <Condition name="CutInActStart" delay="0" conditionEdge="none">
+                     <ByValueCondition>
+                        <SimulationTimeCondition value="0" rule="greaterThan"/>
+                     </ByValueCondition>
+                  </Condition>
+               </ConditionGroup>
+            </StartTrigger>
+         </Act>
+      </Story>
+      <StopTrigger>
+         <ConditionGroup>
+             <Condition name="QuitCondition" delay="4" conditionEdge="rising">
+                <ByEntityCondition>
+                   <TriggeringEntities triggeringEntitiesRule="any">
+                      <EntityRef entityRef="Ego"/>
+                   </TriggeringEntities>
+                   <EntityCondition>
+                      <!-- Quit when Ego has come to a stop and Lead is moving away -->
+                      <RelativeSpeedCondition rule="lessThan" value="0" entityRef="Lead"/>
+                   </EntityCondition>
+                </ByEntityCondition>      
+            </Condition>
+         </ConditionGroup>
+      </StopTrigger>
+   </Storyboard>
+</OpenSCENARIO>

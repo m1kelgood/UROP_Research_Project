@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-06-26 15:07:24.262044 by Exclipse SUMO sumo 1.27.0 (VIA .XOSC CONVERSION)
+-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+	<vehicle id="Car1" departLane="1" departPos="10" depart="0.0" departSpeed="13.88888888888889">
+		<route edges="-1#0" />
+	</vehicle>
+	<vehicle id="Car2" departLane="0" departPos="570" depart="0.0" departSpeed="13.88888888888889">
+		<route edges="1#1" />
+	</vehicle>
+	<vehicle id="Car3" departLane="0" departPos="280" depart="0.0" departSpeed="13.88888888888889">
+		<route edges="1#0" />
+	</vehicle>
+	<vehicle id="Car4" departLane="0" departPos="10" depart="0.0" departSpeed="8.333333333333334">
+		<route edges="-2" />
+	</vehicle>
+	<vehicle id="Car5" departLane="0" departPos="280" depart="0.0" departSpeed="8.333333333333334">
+		<route edges="2" />
+	</vehicle>
+</routes>

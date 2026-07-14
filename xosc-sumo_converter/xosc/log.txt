@@ -1,0 +1,102 @@
+esmini GIT REV: v3.1.0-0-a8e18fce
+esmini GIT TAG: v3.1.0
+esmini GIT BRANCH: tags/v3.1.0^0
+esmini BUILD VERSION: 6169
+[] [info] Loaded two_plus_one_road.xosc
+[2026-07-13 11:53:08]
+[] [info] Player options: --osc two_plus_one_road.xosc --camera_mode orbit --ground_plane auto --info_text 1 --logfile_path log.txt --log_level info --text_scale 1.0 --traj_filter 0.1 --light_mode auto 
+[] [info] No fixed timestep specified - running in realtime speed
+[] [info] Generated seed 820286745
+[] [info] Loading two_plus_one_road.xosc (v1.2)
+[] [info] 0 variables
+[] [info] Loaded OpenDRIVE: ../xodr/two_plus_one.xodr
+[] [info] Add and deactivate new object "Ego" (id 0)
+[] [info] 3D model search paths attempted for file car_red.osgb:
+[] [info]   ../models/car_red.osgb
+[] [info]   car_red.osgb
+[] [info]   .//../models/car_red.osgb
+[] [info]   .//./car_red.osgb
+[] [info]   ../scenario_creation/bin/../resources/models//../models/car_red.osgb
+[] [info]   ../scenario_creation/bin/../resources/models//./car_red.osgb
+[] [warn] 3D model ../models/car_red.osgb not located, using specified file path
+[] [info] Add and deactivate new object "Target" (id 1)
+[] [info] Expr ${$InitialEgoS - 15} = 70.0 - 15 = 55.0000000000
+[] [info] Expr ${$InitialSpeed + 10} = 15.0 + 10 = 25.0000000000
+[] [info] 2 parameters:
+[] [info]    InitialSpeed = 15.0
+[] [info]    InitialEgoS = 70.0
+[0.000] [info] Window created at 70,142 with size 1024,576
+[0.000] [info] Generating a simplistic 3D model of the road network
+[0.000] [info] Texture file search paths attempted for file asphalt.jpg:
+[0.000] [info]   asphalt.jpg
+[0.000] [info]   ../xodr/../models/./asphalt.jpg
+[0.000] [info]   ../scenario_creation/bin/../resources/models/./asphalt.jpg
+[0.000] [warn] Texture file asphalt.jpg not located, using specified file path
+[0.000] [info] Texture file search paths attempted for file grass.jpg:
+[0.000] [info]   grass.jpg
+[0.000] [info]   ../xodr/../models/./grass.jpg
+[0.000] [info]   ../scenario_creation/bin/../resources/models/./grass.jpg
+[0.000] [warn] Texture file grass.jpg not located, using specified file path
+[0.000] [info] Name: Ego
+[0.000] [info] Name: Target
+[0.000] [error] Failed to load car_red.osgb - show as bounding box 
+[0.000] [info] Adjusted Target bounding box to model car_red.osgb - xyz: 1.45, 0.00, 0.75 lwh: 5.04, 2.00, 1.50
+[0.000] [info] Init Ego TeleportAction initState -> startTransition -> runningState
+[0.000] [info] Starting teleport Action
+[0.000] [info] Ego New position:
+[0.000] [info] Pos(70.00, -1.75, 0.00) Rot(0.00, 0.00, 0.00) roadId 1 laneId -1 s 70.00 offset 0.00 t -1.75
+[0.000] [info] Init Ego LongitudinalAction initState -> startTransition -> runningState
+[0.000] [info] Init Target TeleportAction initState -> startTransition -> runningState
+[0.000] [info] Starting teleport Action
+[0.000] [info] Target New position:
+[0.000] [info] Pos(55.00, -1.75, 0.00) Rot(0.00, 0.00, 0.00) roadId 1 laneId -1 s 55.00 offset 0.00 t -1.75
+[0.000] [info] Init Target LongitudinalAction initState -> startTransition -> runningState
+[0.000] [info] storyBoard initState -> startTransition -> runningState
+[0.000] [info] mystory initState -> startTransition -> runningState
+[0.000] [info] Act initState -> initToStandbyTransition -> standbyState
+[0.000] [info] Init Ego TeleportAction runningState -> endTransition -> completeState
+[0.000] [info] Init Ego LongitudinalAction runningState -> endTransition -> completeState
+[0.000] [info] Init Target TeleportAction runningState -> endTransition -> completeState
+[0.000] [info] Init Target LongitudinalAction runningState -> endTransition -> completeState
+[0.001] [info] starttrigger: true, delay: 0.00, 0.0010 > 0.0000, edge: rising
+[0.001] [info] Trigger /------------------------------------------------
+[0.001] [info] Group 0:
+[0.001] [info] starttrigger: true
+[0.001] [info] Trigger  ------------------------------------------------/
+[0.001] [info] Act standbyState -> startTransition -> runningState
+[0.001] [info] ManeuverGroup initState -> startTransition -> runningState
+[0.001] [info] Maneuver initState -> startTransition -> runningState
+[0.001] [info] OvertakeEvent initState -> initToStandbyTransition -> standbyState
+[0.001] [info] CutInEvent initState -> initToStandbyTransition -> standbyState
+[4.675] [info] RelativeClearanceCondition: true, delay: 0.00, , edge: none
+[4.675] [info] Trigger /------------------------------------------------
+[4.675] [info] Group 0:
+[4.675] [info] RelativeClearanceCondition: true
+[4.675] [info] Triggering entity 0: Target
+[4.675] [info] Trigger  ------------------------------------------------/
+[4.675] [info] OvertakeEvent standbyState -> startTransition -> runningState
+[4.675] [info] IncreaseSpeed initState -> startTransition -> runningState
+[4.675] [info] OvertakeAction initState -> startTransition -> runningState
+[7.659] [info] IncreaseSpeed runningState -> endTransition -> completeState
+[8.159] [info] OvertakeAction runningState -> endTransition -> completeState
+[8.159] [info] OvertakeEvent complete after 1 execution
+[8.159] [info] OvertakeEvent runningState -> endTransition -> completeState
+[9.675] [info] DistanceCondition: true, delay: 0.00, rel_dist: 20.06 > 20.00, edge: none
+[9.675] [info] Trigger /------------------------------------------------
+[9.675] [info] Group 0:
+[9.675] [info] DistanceCondition: true
+[9.675] [info] Triggering entity 0: Ego
+[9.675] [info] Trigger  ------------------------------------------------/
+[9.675] [info] CutInEvent standbyState -> startTransition -> runningState
+[9.675] [info] LaneChangeRightAction initState -> startTransition -> runningState
+[9.692] [info] stop_simulation: true, delay: 7.00, CutInEvent, RUNNING / START_TRANSITION == RUNNING, edge: none
+[12.158] [info] LaneChangeRightAction runningState -> endTransition -> completeState
+[12.158] [info] CutInEvent complete after 1 execution
+[12.158] [info] CutInEvent runningState -> endTransition -> completeState
+[12.158] [info] Maneuver runningState -> endTransition -> completeState
+[12.158] [info] ManeuverGroup complete after 1 execution
+[12.158] [info] ManeuverGroup runningState -> endTransition -> completeState
+[12.158] [info] Act runningState -> endTransition -> completeState
+[12.158] [info] mystory runningState -> endTransition -> completeState
+[12.175] [info] stop_simulation: false, delay: 7.00, CutInEvent, COMPLETE / END_TRANSITION == RUNNING, edge: none
+[16.027] [info] Closing

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-07-10 14:44:47.034138 by Exclipse SUMO sumo 1.27.0 (VIA .XOSC CONVERSION)
+-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+	<vehicle id="ego_vehicle" departEdge="89" departLane="best" depart="0.0" departSpeed="avg">
+		<route edges="89 -64695 -64687 -2120563 -64691 " />
+	</vehicle>
+</routes>

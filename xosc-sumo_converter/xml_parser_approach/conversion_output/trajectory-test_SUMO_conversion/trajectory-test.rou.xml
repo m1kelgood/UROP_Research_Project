@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-06-26 15:08:12.263132 by Exclipse SUMO sumo 1.27.0 (VIA .XOSC CONVERSION)
+-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+	<vehicle id="Ego" color="255,255,255" depart="0.0" departSpeed="16" departLane="0" departPos="50">
+		<route edges="-1" />
+	</vehicle>
+	<vehicle id="Target" depart="0.0" departSpeed="30" departLane="0" departPos="10">
+		<route edges="-1" />
+	</vehicle>
+</routes>

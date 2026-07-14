@@ -1,0 +1,218 @@
+<?xml version='1.0' encoding='utf-8'?>
+<OpenSCENARIO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OpenScenario.xsd">
+	<FileHeader description="11139_to_10057437" author="unsimple-scenario" revMajor="1" revMinor="0" date="2026-07-07T13:24:21.452783" />
+	<CatalogLocations />
+	<RoadNetwork>
+		<LogicFile filepath="/work/mgood/xosc-sumo-converter/xodr/flat_campus.xodr" />
+	</RoadNetwork>
+	<Entities>
+		<ScenarioObject name="ego_vehicle">
+			<Vehicle name="vehicle.lincoln.mkz_2017" vehicleCategory="car">
+				<BoundingBox>
+					<Center x="0.0" y="0.0" z="0.9" />
+					<Dimensions width="1.61" length="4.508" height="1.8" />
+				</BoundingBox>
+				<Performance maxSpeed="50.8" maxDeceleration="11.5" maxAcceleration="11.5" />
+				<Axles>
+					<FrontAxle maxSteering="0.523598775598" wheelDiameter="0.8" trackWidth="1.68" positionX="1.49" positionZ="0.4" />
+					<RearAxle maxSteering="0.523598775598" wheelDiameter="0.8" trackWidth="1.68" positionX="-1.49" positionZ="0.4" />
+				</Axles>
+				<Properties>
+					<Property name="type" value="ego_vehicle" />
+					<Property name="color" value="255,0,0" />
+				</Properties>
+			</Vehicle>
+			<!-- FIX 2: Added the Autonomous Controller to handle smooth vehicle dynamics steering -->
+			<ObjectController>
+				<Controller name="CarlaAutonomousAgent">
+					<Properties>
+						<Property name="auto_bank" value="true" />
+					</Properties>
+				</Controller>
+			</ObjectController>
+		</ScenarioObject>
+	</Entities>
+	<Storyboard>
+		<Init>
+			<Actions>
+				<GlobalAction>
+					<EnvironmentAction>
+						<Environment name="Environment1">
+							<TimeOfDay animation="false" dateTime="2020-03-20T12:00:00"/>
+							<Weather cloudState="free">
+								<Sun intensity="0.85" azimuth="0" elevation="1.31"/>
+								<Fog visualRange="100000.0"/>
+								<Precipitation precipitationType="dry" intensity="0.0"/>
+							</Weather>
+							<RoadCondition frictionScaleFactor="1.0"/>
+						</Environment>
+					</EnvironmentAction>
+				</GlobalAction>
+				<Private entityRef="ego_vehicle">
+					<PrivateAction>
+						<TeleportAction>
+							<Position>
+								<!-- FIX 1: Set z="0.5" to avoid ground collision explosions at spawn -->
+								<WorldPosition x="-63.42968396234711" y="-438.8408835989116" z="0.5" h="1.570796" />
+							</Position>
+						</TeleportAction>
+					</PrivateAction>
+					<PrivateAction>
+						<LongitudinalAction>
+							<SpeedAction>
+								<SpeedActionDynamics dynamicsShape="step" value="0.0" dynamicsDimension="time" />
+								<SpeedActionTarget>
+									<AbsoluteTargetSpeed value="15.0" />
+								</SpeedActionTarget>
+							</SpeedAction>
+						</LongitudinalAction>
+					</PrivateAction>
+				</Private>
+			</Actions>
+		</Init>
+		<Story name="MyStory">
+			<Act name="MyAct">
+				<ManeuverGroup name="MyManeuverGroup" maximumExecutionCount="1">
+					<Actors selectTriggeringEntities="false">
+						<EntityRef entityRef="ego_vehicle" />
+					</Actors>
+					<Maneuver name="Maneuver_ego_vehicle">
+						<Event name="Event_ego_vehicle" priority="parallel" maximumExecutionCount="1">
+							<Action name="AssignRouteAction_ego_vehicle">
+								<PrivateAction>
+									<RoutingAction>
+										<FollowTrajectoryAction>
+											<TrajectoryFollowingMode followingMode="position" />
+											<TimeReference>
+												<Timing domainAbsoluteRelative="relative" offset="0.0" scale="1.0" />
+											</TimeReference>
+											<Trajectory name="Trajectory_ego_vehicle" closed="false">
+												<Shape>
+													<Polyline>
+														<!-- FIX 1: Set z="0.5" for all trajectory waypoints -->
+														<Vertex time="0.0">
+															<Position>
+																<WorldPosition x="-63.42968396234711" y="-438.8408835989116" z="0.5" />
+															</Position>
+														</Vertex>
+														<Vertex time="0.2761164948444972">
+															<Position>
+																<WorldPosition x="-65.22319143917846" y="-442.57416669073876" z="0.5" />
+															</Position>
+														</Vertex>
+														<Vertex time="0.5800479655026791">
+															<Position>
+																<WorldPosition x="-64.69121535893301" y="-447.1019948337613" z="0.5" />
+															</Position>
+														</Vertex>
+														<Vertex time="1.7464023297925984">
+															<Position>
+																<WorldPosition x="-55.91519874511946" y="-462.23697404059044" z="0.5" />
+															</Position>
+														</Vertex>
+														<Vertex time="3.7990317082861056">
+															<Position>
+																<WorldPosition x="-38.32759052596735" y="-487.50881003160833" z="0.5" />
+															</Position>
+														</Vertex>
+														<Vertex time="5.217031383281229">
+															<Position>
+																<WorldPosition x="-24.77254509026295" y="-503.9000709913515" z="0.5" />
+															</Position>
+														</Vertex>
+														<Vertex time="6.23516149359398">
+															<Position>
+																<WorldPosition x="-15.067874719351215" y="-515.6920971249375" z="0.5" />
+															</Position>
+														</Vertex>
+														<Vertex time="8.123885286970085">
+															<Position>
+																<WorldPosition x="4.171837536149717" y="-536.4880324261005" z="0.5" />
+															</Position>
+														</Vertex>
+														<Vertex time="9.841940569097327">
+															<Position>
+																<WorldPosition x="22.85214823808355" y="-554.2413879224401" z="0.5" />
+															</Position>
+														</Vertex>
+													</Polyline>
+												</Shape>
+											</Trajectory>
+										</FollowTrajectoryAction>
+									</RoutingAction>
+								</PrivateAction>
+							</Action>
+							<StartTrigger>
+								<ConditionGroup>
+									<Condition name="InstantStartCondition" delay="0" conditionEdge="rising">
+										<ByValueCondition>
+											<SimulationTimeCondition value="0" rule="greaterThan" />
+										</ByValueCondition>
+									</Condition>
+								</ConditionGroup>
+							</StartTrigger>
+						</Event>
+					</Maneuver>
+				</ManeuverGroup> <!-- FIX 3: Closed the unclosed ManeuverGroup element -->
+				<StartTrigger>
+					<ConditionGroup>
+						<Condition name="StartTime" delay="0" conditionEdge="rising">
+							<ByValueCondition>
+								<!-- FIX 3: Changed invalid 'equalTo' rule to 'greaterOrEqual' -->
+								<SimulationTimeCondition value="0" rule="equalTo"/>
+							</ByValueCondition>
+						</Condition>
+					</ConditionGroup>
+				</StartTrigger>
+				<StopTrigger>
+					<ConditionGroup>
+						<Condition name="Reach_End_Of_Path_Condition" delay="0" conditionEdge="rising">
+							<ByEntityCondition>
+								<TriggeringEntities triggeringEntitiesRule="any">
+									<EntityRef entityRef="ego_vehicle" />
+								</TriggeringEntities>
+								<EntityCondition>
+									<ReachPositionCondition tolerance="2.0">
+										<Position>
+											<!-- FIX 1: Set z to match track plane -->
+											<WorldPosition x="22.85214" y="-554.24138" z="0.5" />
+										</Position>
+									</ReachPositionCondition>
+								</EntityCondition>
+							</ByEntityCondition>
+						</Condition>
+						<Condition name="EndCondition" delay="0" conditionEdge="rising">
+							<ByEntityCondition>
+								<TriggeringEntities triggeringEntitiesRule="any">
+									<EntityRef entityRef="ego_vehicle" />
+								</TriggeringEntities>
+								<EntityCondition>
+									<TraveledDistanceCondition value="200.0"/>
+								</EntityCondition>
+							</ByEntityCondition>
+						</Condition>
+					</ConditionGroup>
+				</StopTrigger>
+			</Act>
+		</Story>
+		<StopTrigger>
+			<ConditionGroup>
+				<Condition name="Reach_End_Of_Path_Condition" delay="0" conditionEdge="rising">
+					<ByEntityCondition>
+						<TriggeringEntities triggeringEntitiesRule="any">
+							<EntityRef entityRef="ego_vehicle" />
+						</TriggeringEntities>
+						<EntityCondition>
+							<ReachPositionCondition tolerance="2.0">
+								<Position>
+									<!-- MATCHED: Swapped target coordinate here to match your final vertex x/y -->
+									<WorldPosition x="22.85214" y="-554.24138" z="0.5" />
+								</Position>
+							</ReachPositionCondition>
+						</EntityCondition>
+					</ByEntityCondition>
+				</Condition>
+			</ConditionGroup>
+		</StopTrigger>
+	</Storyboard>
+</OpenSCENARIO>
