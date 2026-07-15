@@ -1,22 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-07-13T10:57:05.064408+01:00 by Eclipse SUMO sumo 1.27.1
+<!-- generated on 2026-07-15 11:07:02.553375 by Exclipse SUMO sumo 1.27.0 (VIA .XOSC CONVERSION)
 -->
-
 <sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
-
-    <input>
-        <net-file value="../../../netconvert_nets/converted_aldenhoven.net.xml"/>
-        <route-files value="atc_t-junction_left_turn_obstacle_left.rou.xml"/>
-    </input>
-
-    <time>
-        <step-length value="0.1"/>
-    </time>
-
-    <processing>
-        <lateral-resolution value="0.1"/>
-        <time-to-teleport value="-1"/>
-    </processing>
-
+	<input>
+		<net-file value="../../../netconvert_nets/converted_aldenhoven.net.xml" />
+		<route-files value="atc_t-junction_left_turn_obstacle_left.rou.xml" />
+	</input>
+	<time>
+		<step-length value="0.1" />
+	</time>
+	<processing>
+		<lateral-resolution value="0.1" />
+		<time-to-teleport value="-1" />
+	</processing>
 </sumoConfiguration>

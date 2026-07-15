@@ -312,7 +312,7 @@ def traci_control(additional_dynamic_commands, traci_move, mapping_table, output
     # Simulation set-up commands
     sumo_cmd = [
         startup.get("interface"), "-c", sumocfg, "--start", "--quit-on-end", "--step-length", startup.get("step-length"),
-        "--delay", startup.get("delay"), "--waiting-time-memory", startup.get("waiting-time-memory"), "--lanechange-output",
+        "--delay", startup.get("delay"), "--lanechange-output",
         "lanechange_data.xml"
     ]
 

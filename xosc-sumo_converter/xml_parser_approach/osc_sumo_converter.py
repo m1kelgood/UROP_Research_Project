@@ -70,7 +70,6 @@ def find_value(ref_name, param_commands):
     count = 0
     while return_val.startswith("$"):
         sign_count = return_val.count("$")
-        print(return_val, sign_count, param_commands, '\n')
 
         if sign_count == 1:
 
@@ -151,7 +150,6 @@ def entity(child, spawn_commands, catalog_commands):
 
 
 def init(child, spawn_commands, param_commands):
-    print("\nINIT START")
     curr_obj = None
 
     for command in child.iter():
@@ -175,12 +173,10 @@ def init(child, spawn_commands, param_commands):
             if curr_obj != None and new_attrib:
                 spawn_commands[curr_obj].append({descr.tag: new_attrib})
 
-    print("INIT END\n")
     return spawn_commands
 
 
 def story(child, move_commands, param_commands):
-    print("\nSTORY START")
     curr_obj = None
 
     for command in child.iter():
@@ -211,8 +207,6 @@ def story(child, move_commands, param_commands):
 
             if curr_obj != None and new_attrib:
                 move_commands[curr_obj].append({descr.tag: new_attrib})
-
-    print("STORY END\n")
 
     return move_commands
 
@@ -292,7 +286,6 @@ def catalog_reference(spawn_dict, move_dict, catalog_data, mapping_table):
 
         for index, command in enumerate(commands):
             if "CatalogReference" in list(command.keys()):
-                print(index, command)
                 catalog_name = command.get("CatalogReference").get("catalogName")
                 catalog_entry = command.get("CatalogReference").get("entryName")
 
@@ -472,8 +465,10 @@ def create_rou(spawn_commands, base_name, fheader, net_file):
     for elem in root:
         for key, val in defaults.items():
             if key not in list(elem.attrib.keys()):
-                print(f"{elem.attrib.get('id')} was missing necessary spawn attribtue: {key}")
-                print(f"Default value of {val} being applied\n")
+                print(
+                    f"{elem.attrib.get('id')} was missing necessary spawn attribtue '{key}', "
+                    f"default value of {val} being applied\n"
+                )
                 elem.set(key, val)
 
 
@@ -522,7 +517,7 @@ def create_sumocfg(rou_file, net_file, base_name, fheader):
 # Primary pipeline functions
 # ==============================================================================
 def read_text(input_path):
-    print(f"\nReading OpenSCENARIO from: {input_path}")
+    print(f"Reading OpenSCENARIO from: {input_path}")
     
     spawn_commands, move_commands, catalog_commands, param_commands = {}, {}, {}, {}
 
@@ -550,7 +545,7 @@ def read_text(input_path):
 
 
 def process_text(spawn_data, move_data, catalog_data, net_file_path):
-    print(f"\nProcessing data using network: {net_file_path}")
+    print(f"Processing data using network: {net_file_path}")
     
     mapping_table = lane_edge_mapping(net_file_path)
 
@@ -564,7 +559,7 @@ def process_text(spawn_data, move_data, catalog_data, net_file_path):
 
 
 def output_text(sumo_spawn, output_dir, net_file, base_name, fheader):
-    print(f"\nWriting SUMO files to directory: {output_dir}\n")
+    print(f"Writing SUMO files to directory: {output_dir}\n")
     
     try:
         os.chdir(output_dir)
