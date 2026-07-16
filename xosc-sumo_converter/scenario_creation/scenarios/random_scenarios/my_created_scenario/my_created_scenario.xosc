@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='utf-8'?>
+<OpenSCENARIO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OpenScenario.xsd">
+	<FileHeader description="my_created_scenario" author="unsimple-scenario" revMajor="1" revMinor="0" date="2026-07-16 16:42:10.567792" />
+	<CatalogLocations>
+		<Directory path="../xosc/Catalogs/Vehicles/" />
+	</CatalogLocations>
+	<RoadNetwork>
+		<LogicFile filepath="../xodr/flat_campus.xodr" />
+	</RoadNetwork>
+	<Entities>
+		<ScenarioObject name="ego_vehicle">
+			<Vehicle name="car_white" vehicleCategory="car">
+				<BoundingBox>
+					<Center x="2.0" y="0.0" z="0.9" />
+					<Dimensions width="1.61" length="4.508" height="1.8" />
+				</BoundingBox>
+				<Performance maxSpeed="50.8" maxDeceleration="11.5" maxAcceleration="11.5" />
+				<Axles>
+					<FrontAxle maxSteering="0.524" wheelDiameter="0.8" trackWidth="1.68" positionX="2.98" positionZ="0.4" />
+					<RearAxle maxSteering="0.524" wheelDiameter="0.8" trackWidth="1.68" positionX="0.0" positionZ="0.4" />
+				</Axles>
+				<Properties>
+					<Property name="ego_vehicle" value="car_white" />
+					<File filepath="../xosc/models/car_white.osgb" />
+				</Properties>
+			</Vehicle>
+		</ScenarioObject>
+		<ScenarioObject name="other_vehicle">
+			<Vehicle name="car_white" vehicleCategory="car">
+				<BoundingBox>
+					<Center x="2.0" y="0.0" z="0.9" />
+					<Dimensions width="1.61" length="4.508" height="1.8" />
+				</BoundingBox>
+				<Performance maxSpeed="50.8" maxDeceleration="11.5" maxAcceleration="11.5" />
+				<Axles>
+					<FrontAxle maxSteering="0.524" wheelDiameter="0.8" trackWidth="1.68" positionX="2.98" positionZ="0.4" />
+					<RearAxle maxSteering="0.524" wheelDiameter="0.8" trackWidth="1.68" positionX="0.0" positionZ="0.4" />
+				</Axles>
+				<Properties>
+					<Property name="other_vehicle" value="car_white" />
+					<File filepath="../xosc/models/car_white.osgb" />
+				</Properties>
+			</Vehicle>
+		</ScenarioObject>
+	</Entities>
+	<Storyboard>
+		<Init>
+			<Actions>
+				<Private entityRef="ego_vehicle">
+					<PrivateAction>
+						<TeleportAction>
+							<Position>
+								<WorldPosition x="294.2423036298666" y="44.30380571119275" h="1.570796" />
+							</Position>
+						</TeleportAction>
+					</PrivateAction>
+				</Private>
+				<Private entityRef="other_vehicle">
+					<PrivateAction>
+						<TeleportAction>
+							<Position>
+								<WorldPosition x="299.11696868726585" y="-76.46206526289552" h="1.570796" />
+							</Position>
+						</TeleportAction>
+					</PrivateAction>
+				</Private>
+			</Actions>
+		</Init>
+		<Story name="default story">
+			<Act name="default story">
+				<ManeuverGroup name="maneuver_group_ego_vehicle" maximumExecutionCount="1">
+					<Actors selectTriggeringEntities="false">
+						<EntityRef entityRef="ego_vehicle" />
+					</Actors>
+					<Maneuver name="maneuver_ego_vehicle">
+						<Event name="event_ego_vehicle" priority="parallel" maximumExecutionCount="1">
+							<Action name="assign_route_ego_vehicle">
+								<PrivateAction>
+									<RoutingAction>
+										<AssignRouteAction>
+											<Route name="route_ego_vehicle" closed="false">
+												<Waypoint routeStrategy="shortest">
+													<Position>
+														<WorldPosition x="294.2423036298666" y="44.30380571119275" />
+													</Position>
+												</Waypoint>
+												<Waypoint routeStrategy="shortest">
+													<Position>
+														<WorldPosition x="288.3191026060705" y="165.28631789382348" />
+													</Position>
+												</Waypoint>
+											</Route>
+										</AssignRouteAction>
+									</RoutingAction>
+								</PrivateAction>
+							</Action>
+						</Event>
+					</Maneuver>
+					<StartTrigger>
+						<ConditionGroup>
+							<Condition name="act_start" delay="0.0" conditionEdge="none">
+								<ByValueCondition>
+									<SimulationTimeCondition value="0.0" rule="greaterThan" />
+								</ByValueCondition>
+							</Condition>
+						</ConditionGroup>
+					</StartTrigger>
+				</ManeuverGroup>
+				<ManeuverGroup name="maneuver_group_other_vehicle" maximumExecutionCount="1">
+					<Actors selectTriggeringEntities="false">
+						<EntityRef entityRef="other_vehicle" />
+					</Actors>
+					<Maneuver name="maneuver_other_vehicle">
+						<Event name="event_other_vehicle" priority="parallel" maximumExecutionCount="1">
+							<Action name="assign_route_other_vehicle">
+								<PrivateAction>
+									<RoutingAction>
+										<AssignRouteAction>
+											<Route name="route_other_vehicle" closed="false">
+												<Waypoint routeStrategy="shortest">
+													<Position>
+														<WorldPosition x="299.11696868726585" y="-76.46206526289552" />
+													</Position>
+												</Waypoint>
+												<Waypoint routeStrategy="shortest">
+													<Position>
+														<WorldPosition x="299.1095580656829" y="-53.6596155556689" />
+													</Position>
+												</Waypoint>
+											</Route>
+										</AssignRouteAction>
+									</RoutingAction>
+								</PrivateAction>
+							</Action>
+						</Event>
+					</Maneuver>
+					<StartTrigger>
+						<ConditionGroup>
+							<Condition name="act_start" delay="0.0" conditionEdge="none">
+								<ByValueCondition>
+									<SimulationTimeCondition value="0.0" rule="greaterThan" />
+								</ByValueCondition>
+							</Condition>
+						</ConditionGroup>
+					</StartTrigger>
+				</ManeuverGroup>
+			</Act>
+		</Story>
+	</Storyboard>
+</OpenSCENARIO>

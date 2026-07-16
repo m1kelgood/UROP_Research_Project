@@ -1,0 +1,20 @@
+{
+    "scenario name": "my_created_scenario",
+    "vehicle catalog": "../xosc/Catalogs/Vehicles/",
+    "xodr file": "../xodr/flat_campus.xodr",
+    "story name": "default story",
+    "vehicles": {
+        "ego_vehicle": {
+            "name": "car_white",
+            "model_path": "../xosc/models/car_white.osgb",
+            "start_point": "None",
+            "end_point": "None"
+        },
+        "other_vehicle": {
+            "name": "car_white",
+            "model_path": "../xosc/models/car_white.osgb",
+            "start_point": "None",
+            "end_point": "None"
+        }
+    }
+}

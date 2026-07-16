@@ -8,21 +8,22 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from pathlib import Path
 import os
-import subprocess
 import shutil
 from datetime import datetime
 import numpy as np
+import argparse
+import json
+from scenario_setup import create_header, create_entities, create_init, create_story
 
 
 
 # ==============================================================================
 # Global variables
 # ==============================================================================
-OSM_FILE = "../../osm/campus.osm"
-JSON_OUTPUT_PATH = "../scenarios"
+DEFAULT_OSM_FILE = Path("../../osm/campus.osm")
 
 # this needs to match the geoReference line in the .xodr file
-ORIGIN = Origin(50.785562924295, 6.04648796549892, 0)
+DEFUALT_ORIGIN = Origin(50.785562924295, 6.04648796549892, 0)
 
 ROAD_TYPES = [
     "roundabout", "urban", "one_way", "construction_site", "nonurban", "under_bridge"
@@ -170,109 +171,50 @@ def create_route(routing_graph, all_roads, ll_map, max_lookup=20, specific_roads
 # ==============================================================================
 # simple-scenario interface
 # ==============================================================================
-def create_xosc(path, output_path, req_road_types):
-    fname = f"{path[0].id}_to_{path[-1].id}"
-    
-    if req_road_types is not None:
-        folder_path = f"/work/mgood/xosc-sumo-converter/scenario_creation/scenarios/planned_scenarios/{fname}"
-    else:
-        folder_path = f"/work/mgood/xosc-sumo-converter/scenario_creation/scenarios/random_scenarios/{fname}"
-
-    os.mkdir(folder_path)
-    fpath = f"{folder_path}/{fname}.xosc"
-    fheader = "<?xml version='1.0' encoding='utf-8'?>\n"
-
+def create_xosc(path, input_info, req_road_types):
     all_points = []
     for point in path:
         
         for node in point.centerline:
             all_points.append((node.x, node.y))
-
-    root = ET.Element("OpenSCENARIO")
-    root.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
-    root.set("xsi:noNamespaceSchemaLocation", "OpenScenario.xsd")
-
-    ET.SubElement(root, "FileHeader", description=fname, author="unsimple-scenario", revMajor="1", revMinor="0", date=f"{datetime.now().isoformat()}")
-    ET.SubElement(root, "CatalogLocations")
-    road_net = ET.SubElement(root, "RoadNetwork")
-    ET.SubElement(road_net, "LogicFile", filepath="/work/mgood/xosc-sumo-converter/xodr/flat_campus.xodr")
-
-    # this is probably where things could get less hard-coded (pass a vehicle dict along with its points?)
-    entities = ET.SubElement(root, "Entities")
-    scen_obj = ET.SubElement(entities, "ScenarioObject", name="ego_vehicle")
-    veh = ET.SubElement(scen_obj, "Vehicle", name="car_white", vehicleCategory="car")
-    bound_box = ET.SubElement(veh, "BoundingBox")
-    ET.SubElement(bound_box, "Center", x="2.0", y="0.0", z="0.9")
-    ET.SubElement(bound_box, "Dimensions", width="1.61", length="4.508", height="1.8")
-    ET.SubElement(veh, "Performance", maxSpeed="50.8", maxDeceleration="11.5", maxAcceleration="11.5")
-    axles = ET.SubElement(veh, "Axles")
-    ET.SubElement(axles, "FrontAxle", maxSteering="0.523598775598", wheelDiameter="0.8", trackWidth="1.68", positionX="2.98", positionZ="0.4")
-    ET.SubElement(axles, "RearAxle", maxSteering="0.523598775598", wheelDiameter="0.8", trackWidth="1.68", positionX="0.0", positionZ="0.4")
-    properties = ET.SubElement(veh, "Properties")
-    ET.SubElement(properties, "Property", name="model_id", value="ego")
-    ET.SubElement(properties, "Property", name="type", value="ego_vehicle")
-    ET.SubElement(properties, "File", filepath="/work/mgood/esmini-demo_Linux/esmini-demo/resources/models/car_blue.osgb")
-
-    story_board = ET.SubElement(root, "Storyboard")
-    init = ET.SubElement(story_board, "Init")
-    actions = ET.SubElement(init, "Actions")
-    private = ET.SubElement(actions, "Private", entityRef="ego_vehicle")
-    private_action2 = ET.SubElement(private, "PrivateAction")
-    tel_act = ET.SubElement(private_action2, "TeleportAction")
-    pos = ET.SubElement(tel_act, "Position")
-    ET.SubElement(pos, "WorldPosition", x=str(all_points[0][0]), y=str(all_points[0][1]), h="1.570796")
-
-    priv_speed = ET.SubElement(private, "PrivateAction")
-    long_act = ET.SubElement(priv_speed, "LongitudinalAction")
-    speed = ET.SubElement(long_act, "SpeedAction")
-    ET.SubElement(speed, "SpeedActionDynamics", dynamicsShape="step", value="0.0", dynamicsDimension="time")
-    target_speed = ET.SubElement(speed, "SpeedActionTarget")
-    ET.SubElement(target_speed, "AbsoluteTargetSpeed", value="15.0")
-
-    story = ET.SubElement(story_board, "Story", name="MyStory")
-    act = ET.SubElement(story, "Act", name="MyAct")
-    man_group = ET.SubElement(act, "ManeuverGroup", name="MyManeuverGroup", maximumExecutionCount="1")
-
-    actors = ET.SubElement(man_group, "Actors", selectTriggeringEntities="false")
-    ET.SubElement(actors, "EntityRef", entityRef="ego_vehicle")
-    maneuver = ET.SubElement(man_group, "Maneuver", name="Maneuver_ego_vehicle")
-    event = ET.SubElement(maneuver, "Event", name="Event_ego_vehicle", priority="parallel", maximumExecutionCount="1")
-    action = ET.SubElement(event, "Action", name="AssignRouteAction_ego_vehicle")
-    private_action3 = ET.SubElement(action, "PrivateAction")
-    rout_act = ET.SubElement(private_action3, "RoutingAction")
-    follow_traj = ET.SubElement(rout_act, "FollowTrajectoryAction")
-    ET.SubElement(follow_traj, "TrajectoryFollowingMode", followingMode="position")
-
-    time_ref = ET.SubElement(follow_traj, "TimeReference")
-    ET.SubElement(time_ref, "Timing", domainAbsoluteRelative="relative", offset="0.0", scale="1.0")
     
-    traj = ET.SubElement(follow_traj, "Trajectory", name="Trajectory_ego_vehicle", closed="false")
-    shape = ET.SubElement(traj, "Shape")
-    polyline = ET.SubElement(shape, "Polyline")
+    with open(input_info, "r") as f:
+        info = json.load(f)
+        
+    fname = info.get("scenario name")
+    vehicle_dict = info.get("vehicles")
     
-    curr_time = 0.0
-    prev_point = None
+    if req_road_types is not None:
+        folder_path = f"../scenarios/planned_scenarios/{fname}"
+    else:
+        folder_path = f"../scenarios/random_scenarios/{fname}"
 
-    for point in all_points[::5]:   # down sampling on points used to get smoother path and driving behavior
-        if prev_point is not None:
-            distance = np.sqrt((point[0] - prev_point[0])**2 + (point[1] - prev_point[1])**2)
+    os.mkdir(folder_path)
+    fpath = f"{folder_path}/{fname}.xosc"
+    fheader = "<?xml version='1.0' encoding='utf-8'?>\n"
 
-            time_step = distance / 15.0
-            curr_time += time_step
+    root = create_header(info.get("scenario name"), info.get("vehicle catalog"), info.get("xodr file"))
+    root = create_entities(root, vehicle_dict)
+    
+    story_board, vehicle_dict = create_init(root, vehicle_dict, all_points)
+    try:
+        story_board = create_story(story_board, info.get("story name"), vehicle_dict, all_points)
+    except Exception:
+        traceback.print_exc()
 
-        else:
-            curr_time = 0.0
+    with open(fpath, "w", encoding="utf-8") as f:
+        f.write(fheader) 
+        
+        tree = ET.ElementTree(root)
+        ET.indent(tree, space="\t", level=0)
+        tree.write(f, encoding="unicode", xml_declaration=False)
 
-        vertex = ET.SubElement(polyline, "Vertex", time=str(curr_time))
-        pos1 = ET.SubElement(vertex, "Position")
-        ET.SubElement(pos1, "WorldPosition", x=str(point[0]), y=str(point[1]))
-        prev_point = point
 
-    start_trig = ET.SubElement(event, "StartTrigger")
-    start_cond_group = ET.SubElement(start_trig, "ConditionGroup")
-    condition = ET.SubElement(start_cond_group, "Condition", name="InstantStartCondition", delay="0", conditionEdge="rising")
-    by_val = ET.SubElement(condition, "ByValueCondition")
-    ET.SubElement(by_val, "SimulationTimeCondition", value="0", rule="greaterThan")
+    # start_trig = ET.SubElement(event, "StartTrigger")
+    # start_cond_group = ET.SubElement(start_trig, "ConditionGroup")
+    # condition = ET.SubElement(start_cond_group, "Condition", name="InstantStartCondition", delay="0", conditionEdge="rising")
+    # by_val = ET.SubElement(condition, "ByValueCondition")
+    # ET.SubElement(by_val, "SimulationTimeCondition", value="0", rule="greaterThan")
 
     # act_start_trig = ET.SubElement(act, "StartTrigger")
     # act_cond_group = ET.SubElement(act_start_trig, "ConditionGroup")
@@ -280,37 +222,18 @@ def create_xosc(path, output_path, req_road_types):
     # act_by_val = ET.SubElement(act_condition, "ByValueCondition")
     # ET.SubElement(act_by_val, "SimulationTimeCondition", value="0", rule="greaterThan")
 
-    stop = ET.SubElement(story_board, "StopTrigger")
-    cond_group = ET.SubElement(stop, "ConditionGroup")
-    cond = ET.SubElement(cond_group, "Condition", name="Reach_End_Of_Path_Condition", delay="0", conditionEdge="rising")
-    by_entity = ET.SubElement(cond, "ByEntityCondition")
-    trig_entities = ET.SubElement(by_entity, "TriggeringEntities", selectTriggeringEntities="false")
-    ET.SubElement(trig_entities, "EntityRef", entityRef="ego_vehicle")
-    entity_cond = ET.SubElement(by_entity, "EntityCondition")
-    reach_pos = ET.SubElement(entity_cond, "ReachPositionCondition", tolerance="2.0")
-    pos_node = ET.SubElement(reach_pos, "Position")
-    ET.SubElement(pos_node, "WorldPosition", x=str(all_points[-1][0]), y=str(all_points[-1][1]))
-
-    with open(fpath, "w", encoding="utf-8") as f:
-        f.write(fheader) 
-        
-        tree = ET.ElementTree(root)
-        ET.indent(tree, space="\t", level=0)  # Automatically handles formatting/tabs
-        tree.write(f, encoding="unicode", xml_declaration=False)
+    # stop = ET.SubElement(story_board, "StopTrigger")
+    # cond_group = ET.SubElement(stop, "ConditionGroup")
+    # cond = ET.SubElement(cond_group, "Condition", name="Reach_End_Of_Path_Condition", delay="0", conditionEdge="rising")
+    # by_entity = ET.SubElement(cond, "ByEntityCondition")
+    # trig_entities = ET.SubElement(by_entity, "TriggeringEntities", selectTriggeringEntities="false")
+    # ET.SubElement(trig_entities, "EntityRef", entityRef="ego_vehicle")
+    # entity_cond = ET.SubElement(by_entity, "EntityCondition")
+    # reach_pos = ET.SubElement(entity_cond, "ReachPositionCondition", tolerance="2.0")
+    # pos_node = ET.SubElement(reach_pos, "Position")
+    # ET.SubElement(pos_node, "WorldPosition", x=str(all_points[-1][0]), y=str(all_points[-1][1]))
 
     return folder_path, fpath
-
-
-def run_scenario_with_esmini(xosc_path):
-    esmini_path = "/work/mgood/xosc-sumo-converter/scenario_creation/bin/esmini"
-    
-    command = [
-        esmini_path,
-        "--window", "60", "60", "1024", "576",
-        "--osc", xosc_path
-    ]
-
-    subprocess.run(command)
 
 
 
@@ -362,10 +285,23 @@ def plot_route(all_roads, path, ll_map, folder_path, req_road_types):
 # ==============================================================================
 if __name__ == "__main__":
     try:
-        projector = LocalCartesianProjector(ORIGIN)
-        ll2_map = SRP.load_map(OSM_FILE, projector)
-        all_roads = find_all_roads(OSM_FILE, ll2_map, bounds=MAP_BOUNDS)
+        parser = argparse.ArgumentParser(description='Create an OpenSCENARIO driving scene given an input file')
+        parser.add_argument("--osm", type=Path, default=DEFAULT_OSM_FILE, help="OSM file from which the route will be derived")
+        parser.add_argument("--origin", type=tuple, default=(50.785562924295, 6.04648796549892))
+        parser.add_argument("--input_info", type=Path, default=Path("default_input_info.json"), help="information from which the scenario will be created")
+        args = parser.parse_args()
+        
+        if len(args.origin) >= 2:
+            origin = Origin(args.origin[0], args.origin[1], 0)
+        else:
+            origin = DEFUALT_ORIGIN
+
+
+        projector = LocalCartesianProjector(origin)
+        ll2_map = SRP.load_map(str(args.osm), projector)
+        all_roads = find_all_roads(str(args.osm), ll2_map, bounds=MAP_BOUNDS)
         req_road_types = None
+
 
         if req_road_types is not None:
             if type(req_road_types) != list:
@@ -380,9 +316,8 @@ if __name__ == "__main__":
         routing_graph = lanelet2.routing.RoutingGraph(ll2_map, traffic_rules)
 
         path = create_route(routing_graph, all_roads, ll2_map, specific_roads=roads_of_type, max_lookup=MAX_ROUTE_LOOKUP)
-        folder_path, xosc_file_path = create_xosc(path, JSON_OUTPUT_PATH, req_road_types)
+        folder_path, xosc_file_path = create_xosc(path, args.input_info, req_road_types)
         plot_route(all_roads, path, ll2_map, folder_path, req_road_types)
-        run_scenario_with_esmini(xosc_file_path)
 
     except KeyboardInterrupt:
         print(f"\nProgram interrupted by user")
@@ -391,6 +326,7 @@ if __name__ == "__main__":
         print(f"The program was interrupted due to the following error: {e}")
 
     finally:
+        quit()
         delete_scenarios = input("\nWould you like to delete the created scenario information (y/n): ")
 
         if delete_scenarios.strip()[0].lower() == "y":

@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<OpenSCENARIO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OpenScenario.xsd" description="my_created_scenario" author="unsimple-scenario" revMajor="1" revMinor="1" date="2026-07-16@11:14">
+	<Fileheader description="scenario_creation" author="unsimple-scenario" />
+</OpenSCENARIO>
